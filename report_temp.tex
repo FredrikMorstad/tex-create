@@ -1,0 +1,41 @@
+\newcommand{\subject}{Subject}
+\newcommand{\num}{Num}
+\newcommand{\name}{Name}
+\newcommand{\leftHead}{Header}
+\newcommand{\class}{article}
+
+\documentclass[11pt]{\class}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{changepage}
+\usepackage{graphicx}
+\usepackage{float}
+\newcommand{\link}[1]{{\color{blue}\url{#1}}}
+\usepackage{fancyhdr}
+\font\myfont=cmr12 at 20pt
+
+\pagestyle{fancy}
+\lhead{\leftHead}
+\rhead{Topic}
+
+\title{\vspace{-1.25cm}\myfont Assignment \num - \subject \\ \name}
+\author{Fredrik M\o rstad}
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\section{Introduction}
+
+\section{Technical background} 
+
+\section{Design}
+\section{Implementation}
+\section{Evaluation}
+\section{Discussion}
+\section{Conclusion}
+
+\bibliography{report} 
+\bibliographystyle{ieeetr}
+
+\end{document}
