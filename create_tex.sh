@@ -5,7 +5,7 @@ report=0
 subj=""
 subjName=""
 file=""
-num=0
+num=1
 
 declare -A subjects=(
 	["INF-2202"]="Concurrent Data-intensive Programming" 
@@ -17,23 +17,23 @@ parse_file(){
 	subj=${subj^^}
 	subjName=${subjects[$subj]}
 
-	if [ ! -z "$subj" ]; then
-		sed -i "s/\<Subject\>/${subj}/g" $file
-		sed -i "s/\<Header\>/${subj}/g" $file
+	if [ -z subjName ]; then
+		printf "Could not find $subj"
+		exit 1
 	fi
 
-	if [ ! -z "$subjName" ]; then
-		sed -i "s/Name/${subjName}/g" $file
-	fi
+	sed -i "s/\<Subject\>/${subj}/g" $file
+	sed -i "s/\<Header\>/${subj}/g" $file
+	sed -i "s/Name/${subjName}/g" $file
 	sed -i "s/Num/${num}/g" $file
 }
 
 set_up(){
-	# val= ${!subjects["inf-2202"]}
 	cd ~/Templates
-	a=$(find . -maxdepth 1 -name $name)
+	check=$(find . -maxdepth 1 -name $name)
 
-	if [ -z $a ]; then
+	if [ -z $check ]; then
+		printf "Could not find report template \n"
 		exit 1
 	fi
 
@@ -42,6 +42,7 @@ set_up(){
 	if [ $curdir = $dir ]; then
 		cp $name $new_name".tex"
 	else
+		echo "not same dir"
 		cp $curdir/$name $dir
 		mv $dir/$name $dir/$new_name".tex"
 		file=$dir/$new_name".tex"
@@ -52,27 +53,28 @@ set_up(){
 	fi
 }
 
-if [ $# = 0 ];then
-	echo "0 args"
-	exit 1
-fi
 
 usage(){
 	echo "Usage:  
 		Required:
-			-r for report 
 			-n or --name [filename]
 		Optional:
+			-r for report (default)
 			-s or --sub to specify subject
 			-num or --num to specify Assignment number
 	"
 }
 
+if [ $# = 0 ];then
+	usage
+	exit 1
+fi
+
 while [ "$1" != "" ]; do
 	case $1 in
-		-r | --report) report=1;;
-
 		-n | --name) shift; new_name=$1;;
+
+		-r | --report) report=1;;
 
 		-h | --help) usage;;
 
@@ -85,8 +87,9 @@ while [ "$1" != "" ]; do
 	esac
 	shift
 done
-echo "$new_name"
-if [ $report = 1 ] && [ ! -z "$new_name" ];then
+
+echo $new_name
+if [ ! -z "$new_name" ];then
 	set_up 
 else
 	usage
